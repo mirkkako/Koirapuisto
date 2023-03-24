@@ -1,18 +1,14 @@
 package com.example.koirapuisto;
 
 import javafx.application.Application;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import java.io.*;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 
 
 import java.time.LocalDate;
@@ -27,19 +23,10 @@ public class KoirapuistoDemo extends Application {
     /**
      * tänne tulee käyttöliittymä
      */
-
     /**
-     * Kirjan tekstikentta
+     * Kommenttien tekstikentta
      */
-    private TextField tfKirja = new TextField();
-    /**
-     * Kirjailijan tekstikentta
-     */
-    private TextField tfKirjailija = new TextField();
-    /**
-     * Sivumaaran tekstikentta
-     */
-    private TextField tfSivumaara = new TextField();
+    private TextField tfKommentit = new TextField();
     /**
      * Paivamaaran DatePicker
      */
@@ -52,18 +39,6 @@ public class KoirapuistoDemo extends Application {
      * Lukupaivakirja-olio
      */
 
-    /**
-     * kirjaolioiden maara
-     */
-    private int kirjatYhteensa = 0;
-
-    /**
-     * sivujen maara
-     */
-    private int luettujaSivuja = 0;
-
-
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -74,6 +49,13 @@ public class KoirapuistoDemo extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+
+        ListView puistolista = new ListView();
+
+        puistolista.getItems().add("Puisto 1");
+        puistolista.getItems().add("Puisto 2");
+        puistolista.getItems().add("Puisto 3");
+
         //OK-painike ikkunan alalaitaan
         Button OKpainike = new Button();
         OKpainike.setLayoutX(250);
@@ -81,54 +63,70 @@ public class KoirapuistoDemo extends Application {
         OKpainike.setText("OK!");
 
         //tekstikenttien kuvaukset
-        Label eka = new Label("Kirjan nimi: ");
-        Label toka = new Label("Kirjailijan nimi: ");
-        Label kolmas = new Label("Sivumäärä: ");
-        Label neljas = new Label("Luettu: ");
+        Label eka = new Label("Puiston nimi: ");
+        Label toka = new Label("Puiston osoite: ");
+        Label kolmas = new Label("Kommentit: ");
+        Label neljas = new Label("Käyty: ");
         Label viides = new Label("Arvosana");
 
-        //MenuItemit arvosanalle
-        MenuItem menuItem1 = new MenuItem("5");
-        MenuItem menuItem2 = new MenuItem("4");
-        MenuItem menuItem3 = new MenuItem("3");
-        MenuItem menuItem4 = new MenuItem("2");
-        MenuItem menuItem5 = new MenuItem("1");
+        //RadioButtonit arvosanalle
+        RadioButton radioButton1 = new RadioButton("1");
+        RadioButton radioButton2 = new RadioButton("2");
+        RadioButton radioButton3 = new RadioButton("3");
+        RadioButton radioButton4 = new RadioButton("4");
+        RadioButton radioButton5 = new RadioButton("5");
+
+        ToggleGroup radioGroup = new ToggleGroup();
+        radioButton1.setToggleGroup(radioGroup);
+        radioButton2.setToggleGroup(radioGroup);
+        radioButton3.setToggleGroup(radioGroup);
+        radioButton4.setToggleGroup(radioGroup);
+        radioButton5.setToggleGroup(radioGroup);
+
 
         //MenuButton MenuItemeille
-        MenuButton arvosanaValitsin = new MenuButton("Valitse arvosana", null, menuItem1, menuItem2, menuItem3, menuItem4, menuItem5);
-
-
-        //arvosanaValitsimen tapahtumat
-        menuItem1.setOnAction(event -> {
-            System.out.println("Arvosana: 5");
-        });
-        menuItem2.setOnAction(event -> {
-            System.out.println("Arvosana: 4");
-        });
-        menuItem3.setOnAction(event -> {
-            System.out.println("Arvosana: 3");
-        });
-        menuItem4.setOnAction(event -> {
-            System.out.println("Arvosana: 2");
-        });
-        menuItem5.setOnAction(event -> {
-            System.out.println("Arvosana: 1");
-        });
+        VBox arvosanaValitsin = new VBox( radioButton1, radioButton2, radioButton3, radioButton4, radioButton5);
 
 
         //GridPne-paneeli, teksikenttien ja painikkeiden asettelua siihen
         GridPane root = new GridPane();
-        root.addRow(0, eka, tfKirja);
-        root.addRow(1, toka, tfKirjailija);
-        root.addRow(2, kolmas, tfSivumaara);
+    //    root.addRow(0, eka, tfPuisto);
+    //    root.addRow(1, toka, tfosoite);
+        root.addRow(2, kolmas, tfKommentit);
         root.addRow(3, neljas, paivaValitsin);
         root.addRow(4, viides, arvosanaValitsin);
         root.addRow(5, OKpainike);
+        root.addRow(6,puistolista);
         root.setVgap(5);
         root.setHgap(5);
         root.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(root, 500,200);
+        OKpainike.setOnAction(action -> {
+       //     System.out.println("Kirjan nimi: " + tfOsoite.getText());
+            LocalDate paiva = paivaValitsin.getValue();
+            System.out.println("käyty: " + paiva);
+
+            if (radioButton1.isSelected()) {
+                System.out.println("Arvosana: 1");
+            }
+            if (radioButton2.isSelected()) {
+                System.out.println("Arvosana: 2");
+            }
+            if (radioButton3.isSelected()) {
+                System.out.println("Arvosana: 3");
+            }
+            if (radioButton4.isSelected()) {
+                System.out.println("Arvosana: 4");
+            }
+            if (radioButton5.isSelected()) {
+                System.out.println("Arvosana: 5");
+            }
+
+
+        });
+
+
+        Scene scene = new Scene(root, 600,300);
         primaryStage.setTitle("Koirapuisto");
         primaryStage.setScene(scene);
         primaryStage.show();
