@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 /*
  * Luokka toteuttaa koirapuisto-ohjelman,
- * jonka kenttia ovat puiston nimi, puiston osoite, ja kävijamäärä
+ * jonka kenttia ovat puiston nimi, puiston kommentit, ja kävijamäärä
  *
  */
 
@@ -21,17 +21,18 @@ public class Koirapuisto implements Serializable {
      */
     private String puistonNimi;
     /**
-     * Puiston osoite merkkijonona
+     * Puiston kommentit merkkijonona
      */
-    private String osoite;
+    private String kommentit;
     /**
      * Puiston kävijämäärä kokonaislukuna
      */
     private int kavijat;
+
     /**
      * Kävijämäärää laskeva muuttuja
      */
-    private int kavijatYteensa = 0;
+    private int kavijatYhteensa = 0;
 
     /**
      * Parametritön alustaja, joka luo uuden koirapuiston
@@ -39,17 +40,18 @@ public class Koirapuisto implements Serializable {
     public Koirapuisto() {
 
     }
+ //  Koirapuisto [] puistot = new Koirapuisto[3];
 
     /*** Lukupaivakirja perustiedoilla
      * @param puistonNimi
-     * @param osoite
+     * @param kommentit
      * @param kavijat
      */
-    public Koirapuisto(String puistonNimi, String osoite, int kavijat) {
+    public Koirapuisto(String puistonNimi, String kommentit, int kavijat) {
         this.puistonNimi = puistonNimi;
-        this.osoite = osoite;
+        this.kommentit= kommentit;
         this.kavijat = kavijat;
-        kavijatYteensa++;
+        kavijatYhteensa++;
     }
 
     /**
@@ -59,7 +61,7 @@ public class Koirapuisto implements Serializable {
      */
     public Koirapuisto(Koirapuisto puisto) {
         this.puistonNimi = puisto.getPuistonNimi();
-        this.osoite = puisto.getOsoite();
+        this.kommentit = puisto.getKommentit();
         this.kavijat = puisto.getKavijat();
 
     }
@@ -72,12 +74,12 @@ public class Koirapuisto implements Serializable {
         this.puistonNimi = puistonNimi;
     }
 
-    public String getOsoite() {
-        return osoite;
+    public String getKommentit() {
+        return kommentit;
     }
 
-    public void setOsoite(String osoite) {
-        this.osoite = osoite;
+    public void setKommentit(String osoite) {
+        this.kommentit = osoite;
     }
 
     public int getKavijat() {
@@ -88,23 +90,23 @@ public class Koirapuisto implements Serializable {
         this.kavijat = kavijat;
     }
 
-    public int getKavijatYteensa() {
-        int kavijatYteensa = 0;
-        kavijatYteensa++;
-        return kavijatYteensa;
+    public int getKavijatYhteensa() {
+        int kavijatYhteensa = 0;
+        kavijatYhteensa++;
+        return kavijatYhteensa;
     }
 
-    public void setKavijatYteensa(int kavijatYteensa) {
-        this.kavijatYteensa = kavijatYteensa;
+    public void setKavijatYhteensa(int kavijatYhteensa) {
+        this.kavijatYhteensa = kavijatYhteensa;
     }
 
     @Override
     public String toString() {
         return "Koirapuisto{" +
                 "puistonNimi='" + puistonNimi + '\'' +
-                ", osoite='" + osoite + '\'' +
+                ", osoite='" + kommentit + '\'' +
                 ", kavijat=" + kavijat +
-                ", kavijatYteensa=" + kavijatYteensa +
+                ", kavijatYteensa=" + kavijatYhteensa +
                 '}';
     }
 
@@ -129,34 +131,31 @@ public class Koirapuisto implements Serializable {
      *
      * @throws IOException Virheilmoituksia varten
      */
-    public static void lueOliot() throws IOException {
-        //lista johon kerätään olio
-        ArrayList<Koirapuisto> puistoLista = new ArrayList<>();
-        int x = 0;
-        try {
-            FileInputStream ok = new FileInputStream("puistot.dat");
+    /**
+     *     public static void lueOliot() throws IOException {
+     *         //lista johon kerätään olio
+     *         ArrayList<Koirapuisto> puistoLista = new ArrayList<>();
+     *         int x = 0;
+     *         try {
+     *             FileInputStream ok = new FileInputStream("puistot.dat");
+     *
+     *             //luetaan olioita niin kauan, kun niitä on tiedostossa jäljellä
+     *             while (ok.available() > 0) {
+     *                 ObjectInputStream tiedostoOlio = new ObjectInputStream(ok);
+     *                 Koirapuisto puisto = null;
+     *
+     *                 try {
+     *                     puisto = (Koirapuisto) tiedostoOlio.readObject();
+     *                     puistoLista.add(puisto);
+     *
+     *                 } catch (ClassNotFoundException e) {
+     *                     e.printStackTrace();
+     *                 }
+     *             }
+     *         }
+     */
 
-            //luetaan olioita niin kauan, kun niitä on tiedostossa jäljellä
-            while (ok.available() > 0) {
-                ObjectInputStream tiedostoOlio = new ObjectInputStream(ok);
-                Koirapuisto puisto = null;
-
-                try {
-                    puisto = (Koirapuisto) tiedostoOlio.readObject();
-                    puistoLista.add(puisto);
-
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                tiedostoOlio.close();
-
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
-}
+
+
 

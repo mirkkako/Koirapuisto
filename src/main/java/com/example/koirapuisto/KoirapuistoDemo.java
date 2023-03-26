@@ -2,6 +2,7 @@ package com.example.koirapuisto;
 
 import javafx.application.Application;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
@@ -12,6 +13,7 @@ import java.io.*;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 /**
  * Koirapuisto-ohjelmaa kasittelevan luokan kayttoliittyma, johon voidaan syottaa tietoja,
@@ -36,11 +38,14 @@ public class KoirapuistoDemo extends Application {
      */
     private MenuButton arvosanaValitsin = new MenuButton();
     /**
-     * Lukupaivakirja-olio
+     * Kävijönöörä
      */
+    public int kavijatYhteensa = 0;
+
+
 
     public static void main(String[] args) {
-        launch(args);
+        launch();
     }
 
 
@@ -50,11 +55,12 @@ public class KoirapuistoDemo extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        ListView puistolista = new ListView();
+        ComboBox puistolista = new ComboBox();
 
-        puistolista.getItems().add("Puisto 1");
-        puistolista.getItems().add("Puisto 2");
-        puistolista.getItems().add("Puisto 3");
+        puistolista.getItems().add(0,"Pitkäkosken koirapuisto");
+        puistolista.getItems().add(1,"Kahluuniityn koirapuisto");
+        puistolista.getItems().add(2, "Metsälän koirapuisto");
+
 
         //OK-painike ikkunan alalaitaan
         Button OKpainike = new Button();
@@ -63,8 +69,7 @@ public class KoirapuistoDemo extends Application {
         OKpainike.setText("OK!");
 
         //tekstikenttien kuvaukset
-        Label eka = new Label("Puiston nimi: ");
-        Label toka = new Label("Puiston osoite: ");
+        Label eka = new Label("Valitse puisto: ");
         Label kolmas = new Label("Kommentit: ");
         Label neljas = new Label("Käyty: ");
         Label viides = new Label("Arvosana");
@@ -85,24 +90,41 @@ public class KoirapuistoDemo extends Application {
 
 
         //MenuButton MenuItemeille
-        VBox arvosanaValitsin = new VBox( radioButton1, radioButton2, radioButton3, radioButton4, radioButton5);
+        HBox arvosanaValitsin = new HBox( radioButton1, radioButton2, radioButton3, radioButton4, radioButton5);
 
 
         //GridPne-paneeli, teksikenttien ja painikkeiden asettelua siihen
         GridPane root = new GridPane();
-    //    root.addRow(0, eka, tfPuisto);
-    //    root.addRow(1, toka, tfosoite);
+        root.addRow(0, eka, puistolista);
         root.addRow(2, kolmas, tfKommentit);
         root.addRow(3, neljas, paivaValitsin);
         root.addRow(4, viides, arvosanaValitsin);
         root.addRow(5, OKpainike);
-        root.addRow(6,puistolista);
         root.setVgap(5);
         root.setHgap(5);
         root.setAlignment(Pos.CENTER);
 
+
         OKpainike.setOnAction(action -> {
-       //     System.out.println("Kirjan nimi: " + tfOsoite.getText());
+            Object selectedItem = puistolista.getSelectionModel().getSelectedItem();
+            System.out.println("Puisto: " + selectedItem);
+            if (selectedItem == "Pitkäkosken koirapuisto") {
+                int pitkakoski = 0;
+                pitkakoski = +1;
+                System.out.println("Käyntejä tässä puistossa: " + pitkakoski);
+
+            } else if (selectedItem == "Kahluuniityn koirapuisto") {
+                    int kahluuniitty = 0;
+                    kahluuniitty++;
+                    System.out.println("Käyntejä tässä puistossa: " + kahluuniitty);
+
+                } else if (selectedItem == "Metsälann koirapuisto") {
+                    int metsala = 0;
+                    metsala++;
+                    System.out.println("Käyntejä tässä puistossa: " + metsala);
+                }
+
+            System.out.println("Kommentteja puistosta: " + tfKommentit.getText());
             LocalDate paiva = paivaValitsin.getValue();
             System.out.println("käyty: " + paiva);
 
@@ -121,6 +143,9 @@ public class KoirapuistoDemo extends Application {
             if (radioButton5.isSelected()) {
                 System.out.println("Arvosana: 5");
             }
+            //lasketaan kavijoiden maara
+            int kavijatKerroin = ++ kavijatYhteensa;
+            System.out.println("Puistokäyntejä yhteensä: " + kavijatKerroin);
 
 
         });
