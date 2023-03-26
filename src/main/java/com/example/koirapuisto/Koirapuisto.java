@@ -1,14 +1,7 @@
 package com.example.koirapuisto;
 
-import java.io.Serializable;
-import java.io.EOFException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.io.*;
+
 /*
  * Luokka toteuttaa koirapuisto-ohjelman,
  * jonka kenttia ovat puiston nimi, puiston kommentit, ja kävijamäärä
@@ -40,7 +33,6 @@ public class Koirapuisto implements Serializable {
     public Koirapuisto() {
 
     }
- //  Koirapuisto [] puistot = new Koirapuisto[3];
 
     /*** Lukupaivakirja perustiedoilla
      * @param puistonNimi
@@ -65,95 +57,139 @@ public class Koirapuisto implements Serializable {
         this.kavijat = puisto.getKavijat();
 
     }
+    /**
+     * palauttaa puiston nimen
+     *
+     * @return String
+     */
 
     public String getPuistonNimi() {
         return puistonNimi;
     }
-
+    /**
+     * asettaa puiston nimen
+     *
+     * @param puistonNimi String
+     */
     public void setPuistonNimi(String puistonNimi) {
         this.puistonNimi = puistonNimi;
     }
-
+    /**
+     * palauttaa puistoon liittyvät kommentit
+     *
+     * @return String
+     */
     public String getKommentit() {
         return kommentit;
     }
+    /**
+     * asettaa puiston kommentit
+     *
+     * @param kommentit String
+     */
 
-    public void setKommentit(String osoite) {
-        this.kommentit = osoite;
+    public void setKommentit(String kommentit) {
+        this.kommentit = kommentit;
     }
 
+    /**
+     * Palauttaa kävijämäärän
+     * @return int
+     */
     public int getKavijat() {
         return kavijat;
     }
+
+    /**
+     * Asettaa kävijämäärän
+     * @param kavijat
+     */
 
     public void setKavijat(int kavijat) {
         this.kavijat = kavijat;
     }
 
+    /**
+     * Palauttaa yhteenlasketun kävijämäärän
+     * @return
+     */
     public int getKavijatYhteensa() {
         int kavijatYhteensa = 0;
         kavijatYhteensa++;
         return kavijatYhteensa;
     }
 
+    /**
+     * Asettaa yhteenlasketun kävijämäärän
+     * @param kavijatYhteensa
+     */
     public void setKavijatYhteensa(int kavijatYhteensa) {
         this.kavijatYhteensa = kavijatYhteensa;
     }
 
+    /**
+     * Tekee tiedoista merkkijonon
+     * @return
+     */
     @Override
     public String toString() {
         return "Koirapuisto{" +
-                "puistonNimi='" + puistonNimi + '\'' +
-                ", osoite='" + kommentit + '\'' +
-                ", kavijat=" + kavijat +
-                ", kavijatYteensa=" + kavijatYhteensa +
+                "puiston nimi ='" + puistonNimi + '\'' +
+                ", kommentit ='" + kommentit + '\'' +
+                ", kavijätt =" + kavijat +
+                ", kavijat yhteensä=" + kavijatYhteensa +
                 '}';
     }
 
     /**
-     * @param puisto-olio, oka tallennetaan oliotiedostoon.
+     *
+     * @param args
+     * @throws IOException
+     * @throws ClassNotFoundException
      */
-    public static void tallennaOlio(Koirapuisto puisto) {
-        try (ObjectOutputStream olioVirta = new ObjectOutputStream(new FileOutputStream("puistot.dat", true))) {
-            olioVirta.writeObject(puisto);
-            olioVirta.flush();
-            olioVirta.close();
-            System.out.println("Tallennus onnistui!");
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Koirapuisto puisto = new Koirapuisto();
+
+        File tiedosto = new File("puistot.dat");
+
+        kirjoitetaanOliotiedosto(puisto, tiedosto);
+
+        Koirapuisto p = luetaanOliotiedosto(tiedosto);
+
+        System.out.println(p);
 
     }
 
     /**
-     * Luetaan oliot tiedostosta ja tulostetaan niiden tiedot konsoliin
-     *
-     * @throws IOException Virheilmoituksia varten
+     * Kirjoitetaan oliotiedosto
+     * @param puisto
+     * @param tiedosto
+     * @throws IOException
      */
+    public static void kirjoitetaanOliotiedosto(Koirapuisto puisto, File tiedosto) throws IOException {
+        try (FileOutputStream tiedostoUlos = new FileOutputStream(tiedosto);
+             ObjectOutputStream olioUlos = new ObjectOutputStream(tiedostoUlos)) {
+            olioUlos.writeObject(puisto);
+            olioUlos.flush();
+        }
+    }
+
     /**
-     *     public static void lueOliot() throws IOException {
-     *         //lista johon kerätään olio
-     *         ArrayList<Koirapuisto> puistoLista = new ArrayList<>();
-     *         int x = 0;
-     *         try {
-     *             FileInputStream ok = new FileInputStream("puistot.dat");
-     *
-     *             //luetaan olioita niin kauan, kun niitä on tiedostossa jäljellä
-     *             while (ok.available() > 0) {
-     *                 ObjectInputStream tiedostoOlio = new ObjectInputStream(ok);
-     *                 Koirapuisto puisto = null;
-     *
-     *                 try {
-     *                     puisto = (Koirapuisto) tiedostoOlio.readObject();
-     *                     puistoLista.add(puisto);
-     *
-     *                 } catch (ClassNotFoundException e) {
-     *                     e.printStackTrace();
-     *                 }
-     *             }
-     *         }
+     * Luetaan oliotiedosto
+     * @param tiedosto
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
      */
+    public static Koirapuisto luetaanOliotiedosto(File tiedosto) throws IOException, ClassNotFoundException {
+        Koirapuisto result = null;
+        try (FileInputStream tiedostoSisaan = new FileInputStream(tiedosto);
+             ObjectInputStream olioSisaan = new ObjectInputStream(tiedostoSisaan)) {
+            result = (Koirapuisto) olioSisaan.readObject();
+        }
+        return result;
+    }
 
     }
 

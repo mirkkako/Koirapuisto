@@ -15,6 +15,9 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import static com.example.koirapuisto.Koirapuisto.kirjoitetaanOliotiedosto;
+import static com.example.koirapuisto.Koirapuisto.luetaanOliotiedosto;
+
 /**
  * Koirapuisto-ohjelmaa kasittelevan luokan kayttoliittyma, johon voidaan syottaa tietoja,
  * jotka ohjelma tulostaa.
@@ -48,13 +51,13 @@ public class KoirapuistoDemo extends Application {
         launch();
     }
 
-
     /**
      * Ohjelmaikkuna
      */
     @Override
     public void start(Stage primaryStage) {
 
+        //ComboBox puistoille
         ComboBox puistolista = new ComboBox();
 
         puistolista.getItems().add(0,"Pitkäkosken koirapuisto");
@@ -81,13 +84,13 @@ public class KoirapuistoDemo extends Application {
         RadioButton radioButton4 = new RadioButton("4");
         RadioButton radioButton5 = new RadioButton("5");
 
+        //ToggleGroup radiobuttoneille, jotta käyttäjä voi valita vain yhden
         ToggleGroup radioGroup = new ToggleGroup();
         radioButton1.setToggleGroup(radioGroup);
         radioButton2.setToggleGroup(radioGroup);
         radioButton3.setToggleGroup(radioGroup);
         radioButton4.setToggleGroup(radioGroup);
         radioButton5.setToggleGroup(radioGroup);
-
 
         //MenuButton MenuItemeille
         HBox arvosanaValitsin = new HBox( radioButton1, radioButton2, radioButton3, radioButton4, radioButton5);
@@ -104,30 +107,30 @@ public class KoirapuistoDemo extends Application {
         root.setHgap(5);
         root.setAlignment(Pos.CENTER);
 
-
+        //OK-painikkeet tapahtumat
         OKpainike.setOnAction(action -> {
+
+           Koirapuisto puisto1 = new Koirapuisto();
+
             Object selectedItem = puistolista.getSelectionModel().getSelectedItem();
             System.out.println("Puisto: " + selectedItem);
             if (selectedItem == "Pitkäkosken koirapuisto") {
-                int pitkakoski = 0;
-                pitkakoski = +1;
-                System.out.println("Käyntejä tässä puistossa: " + pitkakoski);
+                System.out.println("Käyntejä Pitkäkosken koirapuistossa: ");
 
             } else if (selectedItem == "Kahluuniityn koirapuisto") {
-                    int kahluuniitty = 0;
-                    kahluuniitty++;
-                    System.out.println("Käyntejä tässä puistossa: " + kahluuniitty);
+                    System.out.println("Käyntejä Kahluuniityn koirapuistossa: ");
 
                 } else if (selectedItem == "Metsälann koirapuisto") {
-                    int metsala = 0;
-                    metsala++;
-                    System.out.println("Käyntejä tässä puistossa: " + metsala);
+                    System.out.println("Käyntejä Metsälän koirapuistossa: ");
                 }
-
+            //Kommenttikentän tekstin lukeminen
             System.out.println("Kommentteja puistosta: " + tfKommentit.getText());
+
+            //Päivämäärävalitsimen toiminta
             LocalDate paiva = paivaValitsin.getValue();
             System.out.println("käyty: " + paiva);
 
+            //RadioButtoneiden toiminnot
             if (radioButton1.isSelected()) {
                 System.out.println("Arvosana: 1");
             }
@@ -148,9 +151,13 @@ public class KoirapuistoDemo extends Application {
             System.out.println("Puistokäyntejä yhteensä: " + kavijatKerroin);
 
 
+
+
+
+
         });
 
-
+        //Ikkunan luominen
         Scene scene = new Scene(root, 600,300);
         primaryStage.setTitle("Koirapuisto");
         primaryStage.setScene(scene);
