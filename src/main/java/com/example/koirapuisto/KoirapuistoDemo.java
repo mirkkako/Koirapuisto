@@ -110,21 +110,25 @@ public class KoirapuistoDemo extends Application {
         //OK-painikkeet tapahtumat
         OKpainike.setOnAction(action -> {
 
-           Koirapuisto puisto1 = new Koirapuisto();
+           Koirapuisto puisto = new Koirapuisto();
 
             Object selectedItem = puistolista.getSelectionModel().getSelectedItem();
             System.out.println("Puisto: " + selectedItem);
             if (selectedItem == "Pitkäkosken koirapuisto") {
                 System.out.println("Käyntejä Pitkäkosken koirapuistossa: ");
+                puisto.setPuistonNimi(selectedItem.toString());
 
             } else if (selectedItem == "Kahluuniityn koirapuisto") {
                     System.out.println("Käyntejä Kahluuniityn koirapuistossa: ");
+                    puisto.setPuistonNimi(selectedItem.toString());
 
                 } else if (selectedItem == "Metsälann koirapuisto") {
                     System.out.println("Käyntejä Metsälän koirapuistossa: ");
+                    puisto.setPuistonNimi(selectedItem.toString());
                 }
             //Kommenttikentän tekstin lukeminen
             System.out.println("Kommentteja puistosta: " + tfKommentit.getText());
+            puisto.setKommentit(tfKommentit.getText());
 
             //Päivämäärävalitsimen toiminta
             LocalDate paiva = paivaValitsin.getValue();
@@ -133,35 +137,56 @@ public class KoirapuistoDemo extends Application {
             //RadioButtoneiden toiminnot
             if (radioButton1.isSelected()) {
                 System.out.println("Arvosana: 1");
+                puisto.setArvosana(radioButton1.getText());
             }
             if (radioButton2.isSelected()) {
                 System.out.println("Arvosana: 2");
+                puisto.setArvosana(radioButton2.getText());
             }
             if (radioButton3.isSelected()) {
                 System.out.println("Arvosana: 3");
+                puisto.setArvosana(radioButton3.getText());
             }
             if (radioButton4.isSelected()) {
                 System.out.println("Arvosana: 4");
+                puisto.setArvosana(radioButton4.getText());
             }
             if (radioButton5.isSelected()) {
                 System.out.println("Arvosana: 5");
+                puisto.setArvosana(radioButton5.getText());
             }
             //lasketaan kavijoiden maara
             int kavijatKerroin = ++ kavijatYhteensa;
             System.out.println("Puistokäyntejä yhteensä: " + kavijatKerroin);
+            puisto.setKavijatYhteensa(kavijatKerroin);
 
+            System.out.println("Kirjoitettiin tiedostoon");
 
+            try{
+                kirjoitetaanOliotiedosto(puisto, new File("puistot.dat"));
+            }
+            catch (IOException ex){
+                ex.printStackTrace();
+            }
 
-
-
-
+            try{
+                luetaanOliotiedosto(new File("puistot.dat"));
+            }
+            catch (IOException ex){
+                ex.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         });
+
 
         //Ikkunan luominen
         Scene scene = new Scene(root, 600,300);
         primaryStage.setTitle("Koirapuisto");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
 
     }
 }

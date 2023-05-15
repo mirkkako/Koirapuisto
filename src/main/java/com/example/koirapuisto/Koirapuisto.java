@@ -1,6 +1,7 @@
 package com.example.koirapuisto;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /*
  * Luokka toteuttaa koirapuisto-ohjelman,
@@ -28,6 +29,10 @@ public class Koirapuisto implements Serializable {
     private int kavijatYhteensa = 0;
 
     /**
+     * Arvosanan ilmoittava muuttuja
+     */
+    private String arvosana;
+    /**
      * Parametritön alustaja, joka luo uuden koirapuiston
      */
     public Koirapuisto() {
@@ -39,15 +44,16 @@ public class Koirapuisto implements Serializable {
      * @param kommentit
      * @param kavijat
      */
-    public Koirapuisto(String puistonNimi, String kommentit, int kavijat) {
+    public Koirapuisto(String puistonNimi, String kommentit, int kavijat, String arvosana) {
         this.puistonNimi = puistonNimi;
         this.kommentit= kommentit;
         this.kavijat = kavijat;
+        this.arvosana = arvosana;
         kavijatYhteensa++;
     }
 
     /**
-     * alustaja joka luo uuden kirjan
+     * alustaja joka luo uuden puiston
      *
      * @param puisto
      */
@@ -55,6 +61,7 @@ public class Koirapuisto implements Serializable {
         this.puistonNimi = puisto.getPuistonNimi();
         this.kommentit = puisto.getKommentit();
         this.kavijat = puisto.getKavijat();
+        this.arvosana = puisto.getArvosana();
 
     }
     /**
@@ -131,6 +138,13 @@ public class Koirapuisto implements Serializable {
      * Tekee tiedoista merkkijonon
      * @return
      */
+    public String getArvosana() {
+        return arvosana;
+    }
+
+    public void setArvosana(String arvosana) {
+        this.arvosana = arvosana;
+    }
     @Override
     public String toString() {
         return "Koirapuisto{" +
@@ -155,11 +169,27 @@ public class Koirapuisto implements Serializable {
 
         kirjoitetaanOliotiedosto(puisto, tiedosto);
 
-        Koirapuisto p = luetaanOliotiedosto(tiedosto);
+        puisto = luetaanOliotiedosto(tiedosto);
 
-        System.out.println(p);
+        System.out.println("Kirjoitettiin tiedostoon");
 
+        try{
+            kirjoitetaanOliotiedosto(puisto, new File("puistot.dat"));
+        }
+        catch (IOException ex){
+            ex.printStackTrace();
+        }
+
+        try{
+            luetaanOliotiedosto(new File("puistot.dat"));
+        }
+        catch (IOException ex){
+            ex.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     /**
      * Kirjoitetaan oliotiedosto
@@ -184,7 +214,7 @@ public class Koirapuisto implements Serializable {
      */
     public static Koirapuisto luetaanOliotiedosto(File tiedosto) throws IOException, ClassNotFoundException {
         Koirapuisto result = null;
-        try (FileInputStream tiedostoSisaan = new FileInputStream(tiedosto);
+        try (FileInputStream tiedostoSisaan = new FileInputStream((tiedosto));
              ObjectInputStream olioSisaan = new ObjectInputStream(tiedostoSisaan)) {
             result = (Koirapuisto) olioSisaan.readObject();
         }
